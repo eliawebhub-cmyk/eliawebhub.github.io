@@ -1,0 +1,109 @@
+<!-- ELIA HUB COMPLETE CLEAN SINGLE FILE (WORKING VERSION) --><!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elia Hub</title><style>
+body{margin:0;font-family:Arial;background:#f4f4f4}
+header{background:#0a3d62;color:white;text-align:center;padding:20px}
+nav{background:#1e3799;padding:10px;text-align:center}
+nav a{color:white;margin:10px;text-decoration:none;font-weight:bold}
+.hero{background:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f');background-size:cover;color:white;text-align:center;padding:100px 20px}
+section{padding:40px;text-align:center}
+.cards{display:flex;flex-wrap:wrap;justify-content:center}
+.card{background:white;margin:10px;padding:20px;width:250px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1)}
+.contact{background:#dff9fb;padding:30px}
+button{background:#00b894;color:white;border:none;padding:10px 20px;border-radius:5px}
+footer{background:#0a3d62;color:white;text-align:center;padding:10px}
+@media(max-width:768px){.cards{flex-direction:column}}
+</style></head><body><header>
+<img src="logo.png" alt="Elia Hub Logo" style="width:120px;height:120px;object-fit:contain;display:block;margin:auto;">
+<h1>ELIA HUB</h1>
+<p>Empowering Youth Through Technology</p>
+</header><nav>
+<a href="#">Home</a>
+<a href="#about">About</a>
+<a href="#projects">Projects</a>
+<a href="#blog">Blog</a>
+<a href="#donate">Donate</a>
+<a href="#contact">Contact</a>
+</nav><section class="hero">
+<h1>Welcome to Elia Hub</h1>
+<p>Building Digital Skills in Isingiro District, Uganda</p>
+</section><section id="about">
+<h2>About Us</h2>
+<p>Elia Hub empowers youth through ICT training, innovation, and community development.</p>
+</section><section id="projects">
+<h2>Our Projects</h2>
+<div class="cards">
+<div class="card"><h3>ICT Training</h3><p>Teaching computer skills</p></div>
+<div class="card"><h3>Web Development</h3><p>Building websites</p></div>
+<div class="card"><h3>Digital Marketing</h3><p>Growing brands online</p></div>
+</div>
+</section><section id="blog">
+<h2>Latest News</h2>
+<?php
+$conn = mysqli_connect("localhost","root","","elia_hub");
+$res = mysqli_query($conn,"SELECT * FROM blog ORDER BY id DESC");
+while($row = mysqli_fetch_assoc($res)){
+ echo "<h3>{$row['title']}</h3><p>{$row['content']}</p>";
+}
+?>
+</section><section id="donate">
+<h2>Donate (Mobile Money)</h2>
+<form method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay">
+<input type="hidden" name="public_key" value="YOUR_KEY">
+<input type="hidden" name="tx_ref" value="elia123">
+<input type="hidden" name="amount" value="5000">
+<input type="hidden" name="currency" value="UGX">
+<button type="submit">Donate Now</button>
+</form>
+</section><section class="contact" id="contact">
+<h2>Contact Us</h2>
+<p><b>Phone:</b> +25793280569</p>
+<p><b>Location:</b> Isingiro District, Uganda</p><form method="POST">
+<input type="text" name="name" placeholder="Your Name" required><br><br>
+<input type="email" name="email" placeholder="Your Email" required><br><br>
+<textarea name="message" placeholder="Your Message"></textarea><br><br>
+<button type="submit">Send Message</button>
+</form><?php
+if($_POST){
+$name=$_POST['name'];
+$message=$_POST['message'];
+mail("youremail@gmail.com","Message from Elia Hub","$name: $message");
+echo "<p>Message sent!</p>";
+}
+?></section><section>
+<h2>Admin Login</h2>
+<?php
+session_start();
+if(isset($_POST['user'])){
+ if($_POST['user']=='admin' && $_POST['pass']=='1234'){
+  $_SESSION['admin']=true;
+  echo "Logged in";
+ } else {
+  echo "Wrong login";
+ }
+}
+?>
+<form method="POST">
+<input name="user" placeholder="Username">
+<input name="pass" type="password" placeholder="Password">
+<button>Login</button>
+</form><h3>Post Blog</h3>
+<?php
+if(isset($_SESSION['admin']) && $_SESSION['admin'] && isset($_POST['title'])){
+ $t=$_POST['title'];
+ $c=$_POST['content'];
+ mysqli_query($conn,"INSERT INTO blog(title,content) VALUES('$t','$c')");
+ echo "Posted!";
+}
+?>
+<form method="POST">
+<input name="title" placeholder="Title"><br><br>
+<textarea name="content"></textarea><br><br>
+<button>Post Blog</button>
+</form>
+</section><footer>
+<p>© 2026 Elia Hub | All Rights Reserved</p>
+</footer></body>
+</html>
